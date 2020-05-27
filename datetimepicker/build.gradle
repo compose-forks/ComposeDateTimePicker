@@ -62,10 +62,17 @@ dependencies {
 version '0.1.0'
 group 'com.vanpra'
 
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier.set("sources")
+}
+
 publishing {
     publications {
         Production(MavenPublication) {
             artifact("$buildDir/outputs/aar/datetimepicker-release.aar")
+            artifact sourcesJar
+
             groupId this.group
             artifactId 'datetimepicker'
             version this.version

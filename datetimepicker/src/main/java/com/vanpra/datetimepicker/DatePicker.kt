@@ -72,7 +72,6 @@ internal fun DatePickerLayout(
             useAlpha = true
         ) {
             val newDate = remember(index) {
-                println(index)
                 currentDate.plusMonths(index.toLong())
             }
             val dates = remember(newDate) { getDates(newDate) }

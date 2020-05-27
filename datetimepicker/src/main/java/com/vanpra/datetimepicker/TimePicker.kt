@@ -155,8 +155,8 @@ private fun ClockLayout(
     onAnchorChange: (Int) -> Unit = {},
     onLift: () -> Unit = {}
 ) {
-    val outerRadius = with(DensityAmbient.current) { 100.dp.toPx() }
-    val innerRadius = with(DensityAmbient.current) { 60.dp.toPx() }
+    val outerRadius = with(DensityAmbient.current) { 100.dp.toPx() }.value
+    val innerRadius = with(DensityAmbient.current) { 60.dp.toPx() }.value
     val selectedRadius = 70f
 
     val offset = state { Offset.zero }
