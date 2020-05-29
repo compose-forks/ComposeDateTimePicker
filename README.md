@@ -21,7 +21,6 @@ val showingDateTime = state { false }
 
 DateTimePicker(
     showing = showingDateTime,
-    colors = darkColorPalette(), //Temporary untill themeing in Dialogs is fixed
     onComplete = { dateTime ->
         // Do stuff with java.time.LocalDateTime object which is passed in
     })
@@ -36,7 +35,6 @@ val showingDate = state { false }
 
 DatePicker(
     showing = showingDate,
-    colors = darkColorPalette(), //Temporary untill themeing in Dialogs is fixed
     onComplete = { date ->
         // Do stuff with java.time.LocalDate object which is passed in
     })
@@ -54,7 +52,6 @@ val showingTime = state { false }
 
 TimePicker(
     showing = showingTime,
-    colors = darkColorPalette(), //Temporary untill themeing in Dialogs is fixed
     onComplete = { time ->
         // Do stuff with java.time.LocalTime object which is passed in
     })
@@ -62,10 +59,6 @@ TimePicker(
 ```
 
 To show the dialog just set the value of  the state `showingTime` to true
-
-# Theming
-
-To theme the dialog properly the current theme `ColorPalette`  should be passed into the picker using the `colors` parameter. This is a temporary workaround until theming in dialogs is fixed.   The accent colours of the dialog are determined using the `primary` field of the `ColorPalette` and the background is determined using the `background` field of the `ColorPalette`.  The colour selection pointer for the time picker is determined using the `secondary` field of `ColorPalette` . 
 
 # To Do
 

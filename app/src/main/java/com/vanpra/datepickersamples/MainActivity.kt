@@ -32,17 +32,14 @@ class MainActivity : AppCompatActivity() {
 
                 DateTimePicker(
                     showing = showingDateTime,
-                    colors = currentTheme.value,
                     onComplete = { selectedDate.value = it.toString() })
 
                 DatePicker(
                     showing = showingDate,
-                    colors = currentTheme.value,
                     onComplete = { selectedDate.value = it.toString() })
 
                 TimePicker(
                     showing = showingTime,
-                    colors = currentTheme.value,
                     onComplete = { selectedDate.value = it.toString() })
 
                 Column(Modifier.drawBackground(currentTheme.value.background).fillMaxSize()) {
