@@ -19,13 +19,11 @@ import androidx.ui.foundation.*
 import androidx.ui.geometry.Offset
 import androidx.ui.graphics.Canvas
 import androidx.ui.graphics.Color
-import androidx.ui.graphics.drawscope.Stroke
 import androidx.ui.graphics.drawscope.drawCanvas
 import androidx.ui.graphics.toArgb
 import androidx.ui.layout.*
 import androidx.ui.layout.RowScope.gravity
 import androidx.ui.material.MaterialTheme
-import androidx.ui.unit.PxPosition
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import java.time.LocalTime
@@ -33,8 +31,8 @@ import java.time.temporal.ChronoUnit
 import kotlin.math.*
 
 data class SelectedOffset(
-        val lineOffset: Offset = Offset.zero,
-        val selectedOffset: Offset = Offset.zero
+    val lineOffset: Offset = Offset.Zero,
+    val selectedOffset: Offset = Offset.Zero
 )
 
 @Composable
@@ -48,18 +46,21 @@ fun TimePicker(showing: MutableState<Boolean>, onComplete: (LocalTime) -> Unit) 
                 DialogTitle("Select a time", Modifier.padding(top = 16.dp))
                 TimePickerLayout(selectedTime = selectedTime)
                 ButtonLayout(
-                        confirmText = "Ok",
-                        onConfirm = {
-                            showing.value = false
-                            onComplete(selectedTime.value)
-                        })
+                    confirmText = "Ok",
+                    onConfirm = {
+                        showing.value = false
+                        onComplete(selectedTime.value)
+                    })
             }
         }
     }
 }
 
 @Composable
-internal fun TimePickerLayout(modifier: Modifier = Modifier, selectedTime: MutableState<LocalTime>) {
+internal fun TimePickerLayout(
+    modifier: Modifier = Modifier,
+    selectedTime: MutableState<LocalTime>
+) {
     val currentScreen = state { 0 }
     Box(modifier.drawBackground(MaterialTheme.colors.background)) {
         Column {
@@ -67,33 +68,33 @@ internal fun TimePickerLayout(modifier: Modifier = Modifier, selectedTime: Mutab
             Crossfade(currentScreen, TweenBuilder()) {
                 when (it.value) {
                     0 -> ClockLayout(
-                            isHours = true,
-                            anchorPoints = 12,
-                            label = { index ->
-                                if (index == 0) {
-                                    "12"
-                                } else {
-                                    index.toString()
-                                }
-                            },
-                            onAnchorChange = { hours ->
-                                selectedTime.value = selectedTime.value.withHour(hours)
-                            },
-                            selectedTime = selectedTime
+                        isHours = true,
+                        anchorPoints = 12,
+                        label = { index ->
+                            if (index == 0) {
+                                "12"
+                            } else {
+                                index.toString()
+                            }
+                        },
+                        onAnchorChange = { hours ->
+                            selectedTime.value = selectedTime.value.withHour(hours)
+                        },
+                        selectedTime = selectedTime
                     ) {
                         currentScreen.value = 1
                     }
 
                     1 -> ClockLayout(
-                            isHours = false,
-                            anchorPoints = 60,
-                            label = { index ->
-                                index.toString().padStart(2, '0')
-                            },
-                            onAnchorChange = { mins ->
-                                selectedTime.value = selectedTime.value.withMinute(mins)
-                            },
-                            selectedTime = selectedTime
+                        isHours = false,
+                        anchorPoints = 60,
+                        label = { index ->
+                            index.toString().padStart(2, '0')
+                        },
+                        onAnchorChange = { mins ->
+                            selectedTime.value = selectedTime.value.withMinute(mins)
+                        },
+                        selectedTime = selectedTime
                     )
                 }
             }
@@ -111,21 +112,23 @@ private fun TimeLayout(currentScreen: MutableState<Int>, selectedTime: MutableSt
         val minAlpha = 0.6f + 0.4f * currentScreen.value
 
         Row(
-                Modifier.gravity(Alignment.CenterVertically)
-                        .wrapContentWidth(Alignment.CenterHorizontally)
+            Modifier.gravity(Alignment.CenterVertically)
+                .wrapContentWidth(Alignment.CenterHorizontally)
         ) {
-            Text(selectedTime.value.hour.toString().padStart(2, '0'),
-                    fontSize = textSize,
-                    color = color.copy(hourAlpha),
-                    modifier = Modifier.clickable(onClick = { currentScreen.value = 0 })
+            Text(
+                selectedTime.value.hour.toString().padStart(2, '0'),
+                fontSize = textSize,
+                color = color.copy(hourAlpha),
+                modifier = Modifier.clickable(onClick = { currentScreen.value = 0 })
             )
 
             Text(":", fontSize = textSize, color = color)
 
-            Text(selectedTime.value.minute.toString().padStart(2, '0'),
-                    fontSize = textSize,
-                    color = color.copy(minAlpha),
-                    modifier = Modifier.clickable(onClick = { currentScreen.value = 1 })
+            Text(
+                selectedTime.value.minute.toString().padStart(2, '0'),
+                fontSize = textSize,
+                color = color.copy(minAlpha),
+                modifier = Modifier.clickable(onClick = { currentScreen.value = 1 })
             )
         }
     }
@@ -133,19 +136,19 @@ private fun TimeLayout(currentScreen: MutableState<Int>, selectedTime: MutableSt
 
 @Composable
 private fun ClockLayout(
-        isHours: Boolean,
-        anchorPoints: Int,
-        label: (Int) -> String,
-        selectedTime: MutableState<LocalTime>,
-        onAnchorChange: (Int) -> Unit = {},
-        onLift: () -> Unit = {}
+    isHours: Boolean,
+    anchorPoints: Int,
+    label: (Int) -> String,
+    selectedTime: MutableState<LocalTime>,
+    onAnchorChange: (Int) -> Unit = {},
+    onLift: () -> Unit = {}
 ) {
-    val outerRadius = with(DensityAmbient.current) { 100.dp.toPx() }.value
-    val innerRadius = with(DensityAmbient.current) { 60.dp.toPx() }.value
+    val outerRadius = with(DensityAmbient.current) { 100.dp.toPx() }
+    val innerRadius = with(DensityAmbient.current) { 60.dp.toPx() }
     val selectedRadius = 70f
 
-    val offset = state { Offset.zero }
-    val center = state { Offset.zero }
+    val offset = state { Offset.Zero }
+    val center = state { Offset.Zero }
     val namedAnchor = state { true }
 
     val anchors = remember {
@@ -156,20 +159,20 @@ private fun ClockLayout(
             val lineOuterOffset = (outerRadius - selectedRadius).getOffset(angle)
 
             anchors.add(
-                    SelectedOffset(
-                            lineOuterOffset,
-                            selectedOuterOffset
-                    )
+                SelectedOffset(
+                    lineOuterOffset,
+                    selectedOuterOffset
+                )
             )
 
             if (isHours) {
                 val selectedInnerOffset = innerRadius.getOffset(angle)
                 val lineInnerOffset = (innerRadius - selectedRadius).getOffset(angle)
                 anchors.add(
-                        SelectedOffset(
-                                lineInnerOffset,
-                                selectedInnerOffset
-                        )
+                    SelectedOffset(
+                        lineInnerOffset,
+                        selectedInnerOffset
+                    )
                 )
             }
         }
@@ -192,24 +195,24 @@ private fun ClockLayout(
 
     fun updateAnchor() {
         val absDiff =
-                anchors.map {
-                    val diff = it.selectedOffset - offset.value + center.value
-                    diff.dx.pow(2) + diff.dy.pow(2)
-                }
+            anchors.map {
+                val diff = it.selectedOffset - offset.value + center.value
+                diff.x.pow(2) + diff.y.pow(2)
+            }
         val minAnchor = absDiff.withIndex().minBy { (_, f) -> f }?.index
         if (anchoredOffset.value.selectedOffset != anchors[minAnchor!!].selectedOffset) {
             onAnchorChange(
-                    if (isHours && minAnchor % 2 == 1) {
-                        if (minAnchor != 1) {
-                            (minAnchor / 2 + 12)
-                        } else {
-                            0
-                        }
-                    } else if (isHours) {
-                        label(minAnchor / 2).toInt()
+                if (isHours && minAnchor % 2 == 1) {
+                    if (minAnchor != 1) {
+                        (minAnchor / 2 + 12)
                     } else {
-                        label(minAnchor).toInt()
+                        0
                     }
+                } else if (isHours) {
+                    label(minAnchor / 2).toInt()
+                } else {
+                    label(minAnchor).toInt()
+                }
             )
 
             anchoredOffset.value = anchors[minAnchor]
@@ -220,39 +223,40 @@ private fun ClockLayout(
     }
 
     val dragObserver =
-            object : DragObserver {
-                override fun onStart(downPosition: PxPosition) {
-                    offset.value = Offset(downPosition.x.value, downPosition.y.value)
-                }
-
-                override fun onStop(velocity: PxPosition) {
-                    super.onStop(velocity)
-                    onLift()
-                }
-
-                override fun onDrag(dragDistance: PxPosition): PxPosition {
-                    offset.value = Offset(
-                            offset.value.dx + dragDistance.x.value,
-                            offset.value.dy + dragDistance.y.value
-                    )
-                    updateAnchor()
-                    return dragDistance
-                }
+        object : DragObserver {
+            override fun onStart(downPosition: Offset) {
+                offset.value = Offset(downPosition.x, downPosition.y)
             }
 
+            override fun onStop(velocity: Offset) {
+                super.onStop(velocity)
+                onLift()
+            }
 
-    val touchFilter = { pos: PxPosition ->
-        offset.value = Offset(pos.x.value, pos.y.value)
+            override fun onDrag(dragDistance: Offset): Offset {
+                offset.value = Offset(
+                    offset.value.x + dragDistance.x,
+                    offset.value.y + dragDistance.y
+                )
+                updateAnchor()
+                return dragDistance
+            }
+        }
+
+
+    val touchFilter = { pos: Offset ->
+        offset.value = pos
         updateAnchor()
     }
 
     WithConstraints {
-        Box(Modifier.preferredSize(maxWidth).pressIndicatorGestureFilter(touchFilter, onLift)
+        Box(
+            Modifier.preferredSize(maxWidth).pressIndicatorGestureFilter(touchFilter, onLift)
                 .dragGestureFilter(dragObserver)
         ) {
             remember {
                 center.value =
-                        Offset(constraints.maxWidth.value / 2f, constraints.maxWidth.value / 2f)
+                    Offset(constraints.maxWidth / 2f, constraints.maxWidth / 2f)
                 offset.value = center.value
             }
             val textColor = MaterialTheme.colors.onBackground.toArgb()
@@ -262,26 +266,26 @@ private fun ClockLayout(
                 drawCircle(selectedColor, radius = 16f)
 
                 drawLine(
-                        selectedColor,
-                        center.value,
-                        center.value + anchoredOffset.value.lineOffset,
-                        Stroke(width = 10f),
-                        alpha = 0.8f
+                    color = selectedColor,
+                    start = center.value,
+                    end = center.value + anchoredOffset.value.lineOffset,
+                    strokeWidth = 10f,
+                    alpha = 0.8f
                 )
 
                 drawCircle(
-                        selectedColor,
-                        center = center.value + anchoredOffset.value.selectedOffset,
-                        radius = selectedRadius,
-                        alpha = 0.7f
+                    selectedColor,
+                    center = center.value + anchoredOffset.value.selectedOffset,
+                    radius = selectedRadius,
+                    alpha = 0.7f
                 )
 
                 if (!namedAnchor.value) {
                     drawCircle(
-                            Color.White,
-                            center = center.value + anchoredOffset.value.selectedOffset,
-                            radius = 10f,
-                            alpha = 0.8f
+                        Color.White,
+                        center = center.value + anchoredOffset.value.selectedOffset,
+                        radius = 10f,
+                        alpha = 0.8f
                     )
                 }
 
@@ -291,13 +295,13 @@ private fun ClockLayout(
                         val textOuter = label(x * anchorPoints / 12)
 
                         drawText(
-                                60f,
-                                textOuter,
-                                center.value,
-                                angle.toFloat(),
-                                canvas,
-                                outerRadius,
-                                color = textColor
+                            60f,
+                            textOuter,
+                            center.value,
+                            angle.toFloat(),
+                            canvas,
+                            outerRadius,
+                            color = textColor
                         )
 
                         if (isHours) {
@@ -308,14 +312,14 @@ private fun ClockLayout(
                             }
 
                             drawText(
-                                    45f,
-                                    textInner,
-                                    center.value,
-                                    angle.toFloat(),
-                                    canvas,
-                                    innerRadius,
-                                    200,
-                                    color = textColor
+                                45f,
+                                textInner,
+                                center.value,
+                                angle.toFloat(),
+                                canvas,
+                                innerRadius,
+                                200,
+                                color = textColor
                             )
                         }
                     }
@@ -326,14 +330,14 @@ private fun ClockLayout(
 }
 
 private fun drawText(
-        textSize: Float,
-        text: String,
-        center: Offset,
-        angle: Float,
-        canvas: Canvas,
-        radius: Float,
-        alpha: Int = 255,
-        color: Int = android.graphics.Color.WHITE
+    textSize: Float,
+    text: String,
+    center: Offset,
+    angle: Float,
+    canvas: Canvas,
+    radius: Float,
+    alpha: Int = 255,
+    color: Int = android.graphics.Color.WHITE
 ) {
     val outerText = Paint()
     Color.White
@@ -346,10 +350,10 @@ private fun drawText(
     outerText.getTextBounds(text, 0, text.length, r)
 
     canvas.nativeCanvas.drawText(
-            text,
-            center.dx + (radius * cos(angle)),
-            center.dy + (radius * sin(angle)) + (abs(r.height())) / 2,
-            outerText
+        text,
+        center.x + (radius * cos(angle)),
+        center.y + (radius * sin(angle)) + (abs(r.height())) / 2,
+        outerText
     )
 }
 

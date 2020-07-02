@@ -22,7 +22,6 @@ import androidx.ui.graphics.Color
 import androidx.ui.layout.Row
 import androidx.ui.layout.offset
 import androidx.ui.layout.preferredWidth
-import androidx.ui.unit.Density
 import androidx.ui.unit.Dp
 import kotlin.math.abs
 import kotlin.math.sign
@@ -36,9 +35,9 @@ interface ViewPagerScope {
 }
 
 private data class ViewPagerImpl(
-        override val index: Int,
-        override val interactionState: InteractionState,
-        val increment: (Int) -> Unit
+    override val index: Int,
+    override val interactionState: InteractionState,
+    val increment: (Int) -> Unit
 ) : ViewPagerScope {
     override fun next() {
         increment(1)
@@ -52,18 +51,18 @@ private data class ViewPagerImpl(
 
 @Composable
 fun ViewPager(
-        modifier: Modifier = Modifier,
-        onNext: () -> Unit = {},
-        onPrevious: () -> Unit = {},
-        useAlpha: Boolean = false,
-        range: IntRange = IntRange.EMPTY,
-        enabled: Boolean = true,
-        screenItem: @Composable() ViewPagerScope.() -> Unit
+    modifier: Modifier = Modifier,
+    onNext: () -> Unit = {},
+    onPrevious: () -> Unit = {},
+    useAlpha: Boolean = false,
+    range: IntRange = IntRange.EMPTY,
+    enabled: Boolean = true,
+    screenItem: @Composable() ViewPagerScope.() -> Unit
 ) {
     Box(backgroundColor = Color.Transparent) {
         WithConstraints {
             val alphas = state { mutableListOf(1f, 1f, 1f) }
-            val width = constraints.maxWidth.value.toFloat()
+            val width = constraints.maxWidth.toFloat()
             val offset = animatedFloat(width)
             offset.setBounds(0f, 2 * width)
 
@@ -71,43 +70,43 @@ fun ViewPager(
             val index = state { 0 }
 
             val flingConfig = AnchorsFlingConfig(anchors,
-                    animationBuilder = PhysicsBuilder(dampingRatio = 0.8f, stiffness = 1000f),
-                    onAnimationEnd = { reason, end, _ ->
-                        offset.snapTo(width)
+                animationBuilder = PhysicsBuilder(dampingRatio = 0.8f, stiffness = 1000f),
+                onAnimationEnd = { reason, end, _ ->
+                    offset.snapTo(width)
 
-                        if (reason != AnimationEndReason.Interrupted) {
-                            if (end == width * 2) {
-                                index.value += 1
-                                onNext()
-                            } else if (end == 0f) {
-                                index.value -= 1
-                                onPrevious()
-                            }
+                    if (reason != AnimationEndReason.Interrupted) {
+                        if (end == width * 2) {
+                            index.value += 1
+                            onNext()
+                        } else if (end == 0f) {
+                            index.value -= 1
+                            onPrevious()
                         }
-                    })
+                    }
+                })
 
             val increment = { increment: Int ->
                 offset.animateTo(
-                        width * sign(increment.toDouble()).toFloat() + width,
-                        onEnd = { animationEndReason, _ ->
-                            if (animationEndReason != AnimationEndReason.Interrupted) {
-                                index.value += increment
-                                offset.snapTo(width)
-                            }
-                        })
+                    width * sign(increment.toDouble()).toFloat() + width,
+                    onEnd = { animationEndReason, _ ->
+                        if (animationEndReason != AnimationEndReason.Interrupted) {
+                            index.value += increment
+                            offset.snapTo(width)
+                        }
+                    })
             }
 
             val interactionState = InteractionState()
 
             val draggable = modifier.draggable(
-                    dragDirection = DragDirection.Horizontal,
-                    onDragDeltaConsumptionRequested = {
-                        val old = offset.value
-                        offset.snapTo(offset.value - (it * 0.5f))
-                        offset.value - old
-                    }, onDragStopped = { offset.fling(flingConfig, -(it * 0.6f)) },
-                    interactionState = interactionState,
-                    enabled = enabled
+                dragDirection = DragDirection.Horizontal,
+                onDragDeltaConsumptionRequested = {
+                    val old = offset.value
+                    offset.snapTo(offset.value - (it * 0.5f))
+                    offset.value - old
+                }, onDragStopped = { offset.fling(flingConfig, -(it * 0.6f)) },
+                interactionState = interactionState,
+                enabled = enabled
             )
 
             if (useAlpha) {
@@ -122,20 +121,20 @@ fun ViewPager(
 
             HorizontalScroller(isScrollable = false) {
                 Row(
-                        draggable.preferredWidth(maxWidth * 3)
-                                .offset(-offset.toDp(DensityAmbient.current))
+                    draggable.preferredWidth(maxWidth * 3)
+                        .offset(-offset.toDp())
                 ) {
                     for (x in -1..1) {
                         Box(
-                                Modifier.preferredWidth(maxWidth).drawOpacity(alphas.value[x + 1])
+                            Modifier.preferredWidth(maxWidth).drawOpacity(alphas.value[x + 1])
                         ) {
                             if ((offset.value < width && x == -1) || x == 0 || (offset.value > width && x == 1)) {
                                 val viewPagerImpl =
-                                        ViewPagerImpl(
-                                                index.value + x,
-                                                interactionState,
-                                                increment
-                                        )
+                                    ViewPagerImpl(
+                                        index.value + x,
+                                        interactionState,
+                                        increment
+                                    )
                                 screenItem(viewPagerImpl)
                             }
                         }
@@ -146,6 +145,5 @@ fun ViewPager(
     }
 }
 
-fun AnimatedFloat.toDp(density: Density): Dp {
-    return with(density) { this@toDp.value.toDp() }
-}
+@Composable
+fun AnimatedFloat.toDp(): Dp = with(DensityAmbient.current) { this@toDp.value.toDp() }

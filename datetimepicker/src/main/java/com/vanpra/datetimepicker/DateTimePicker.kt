@@ -34,7 +34,7 @@ fun DateTimePicker(showing: MutableState<Boolean>, onComplete: (LocalDateTime) -
             Column(Modifier.fillMaxWidth().drawBackground(MaterialTheme.colors.background)) {
                 Stack(Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 24.dp)) {
                     WithConstraints {
-                        val ratio = scrollerPosition.value / constraints.maxWidth.value
+                        val ratio = scrollerPosition.value / constraints.maxWidth
                         Image(
                                 Icons.Default.ArrowBack,
                                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onBackground),
@@ -53,7 +53,7 @@ fun DateTimePicker(showing: MutableState<Boolean>, onComplete: (LocalDateTime) -
 
                 Row(Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
                     WithConstraints {
-                        val ratio = scrollerPosition.value / constraints.maxWidth.value
+                        val ratio = scrollerPosition.value / constraints.maxWidth
                         val color = MaterialTheme.colors.onBackground
                         Canvas(modifier = Modifier) {
                             val offset = Offset(30f, 0f)
@@ -72,7 +72,7 @@ fun DateTimePicker(showing: MutableState<Boolean>, onComplete: (LocalDateTime) -
                 }
 
                 WithConstraints {
-                    scrollTo.value = constraints.maxWidth.value.toFloat()
+                    scrollTo.value = constraints.maxWidth.toFloat()
                     HorizontalScroller(isScrollable = false, scrollerPosition = scrollerPosition) {
                         DatePickerLayout(
                                 Modifier.padding(top = 16.dp).preferredWidth(maxWidth),
