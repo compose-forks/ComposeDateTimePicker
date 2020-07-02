@@ -1,5 +1,7 @@
 # Jetpack Compose Date and Time Picker
 
+**Current Compose Version: dev14**
+
 ## Download
 
 [![Download](https://api.bintray.com/packages/vanpra/ComposeDateTimePicker/datetimepicker/images/download.svg?version=0.1.0)](https://bintray.com/vanpra/ComposeDateTimePicker/datetimepicker/0.1.0/link)
