@@ -4,12 +4,12 @@
 
 ## Download
 
-[![Download](https://api.bintray.com/packages/vanpra/ComposeDateTimePicker/datetimepicker/images/download.svg?version=0.1.0)](https://bintray.com/vanpra/ComposeDateTimePicker/datetimepicker/0.1.0/link)
+[ ![Download](https://api.bintray.com/packages/vanpra/ComposeDateTimePicker/datetimepicker/images/download.svg?version=0.1.1) ](https://bintray.com/vanpra/ComposeDateTimePicker/datetimepicker/0.1.1/link)
 
 ```gradle
 dependencies {
   ...
-  implementation 'com.vanpra:datetimepicker:0.1.0'
+  implementation 'com.vanpra:datetimepicker:0.1.1'
   ...
 }
 ```
